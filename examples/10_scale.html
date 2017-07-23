@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="d3.v4.min.js"></script>
+    <script src="lodash.min.js"></script>
+    <title>10. Scales !</title>
+
+    <style>
+        body
+        {
+            background-color:   rgb(51, 51, 51);
+        }
+
+        button
+        {
+            font-size: 20px;
+        }
+
+        .container
+        {
+            background-color:   #ccc;
+            fill:               red;
+        }
+    </style>
+
+</head>
+
+
+<body>
+    <div>
+        <svg width="720" height="400" class="container">
+        </svg>
+    </div>
+
+    <script>
+        const width     = 720;
+        const height    = 400;
+        const maxDays   = 200;  // Pourrait être calculé dynamiquement, par exemple avec d3.max ou _.max / _.maxBy
+        const maxVal    = 42;   // Pourrait être calculé dynamiquement, par exemple avec d3.max ou _.max / _.maxBy
+
+        const x = d3    .scaleLinear()
+                        .domain([0, maxDays])
+                        .range([0, width]);
+
+        const y = d3    .scaleLinear()
+                        .domain([0, maxVal])
+                        .range([height, 0]);    // Attention, y = 0 c'est le HAUT du svg, y = height étant le bas du svg, d'où le height -> 0
+
+        let currentDay = 0;
+
+        let data = _.range(20)  .map    (
+                                            (i) =>  {
+                                                        currentDay +=  10;
+                                                        return  {
+                                                                    id:     i,
+                                                                    day:    currentDay,
+                                                                    value:  20 + _.random(maxVal - 20)
+                                                                };
+                                                    }
+                                        );
+
+        // INITIAL JOIN
+        const circles =     d3  .select("svg")
+                                .selectAll("circle")
+                                .data(data, (d) => d.id)
+        // INITIAL ENTER
+                                .enter()
+                                .append("circle")
+                                .attr("cy", (d, i) => y(d.value))
+                                .attr("cx", (d, i) => x(d.day))
+                                .attr("r", 5);
+    </script>
+</body>
+
+</html>

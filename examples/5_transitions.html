@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="d3.v4.min.js"></script>
+    <title>5 Transitions</title>
+
+    <style>
+        body
+        {
+            background-color:   rgb(51, 51, 51);
+        }
+
+        .container
+        {
+            background-color:   #ccc;
+            fill:               fuchsia;
+        }
+
+        .bleu
+        {
+            fill:   blue;
+        }
+
+        .blanc
+        {
+            fill:   white;
+        }
+
+        .rouge
+        {
+            fill:   red;
+        }
+    </style>
+
+</head>
+
+
+<body>
+    <div>
+        <svg width="720" height="120" class="container">
+            <circle cx="40"     cy="60"     r="10"></circle>
+            <circle cx="120"    cy="60"     r="10"></circle>
+            <circle cx="200"    cy="60"     r="10"></circle>
+        </svg>
+    </div>
+
+    <script>
+
+        d3  .selectAll("circle")
+            .transition()
+            .delay(2000)
+            .duration(5000)
+            .style("fill", "blue")
+            .attr("r", 30)
+            .transition()
+            .delay(500)
+            .duration(5000)
+            .style("fill", "yellow")
+            .attr("cx", 400);
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="d3.v4.min.js"></script>
+    <script src="lodash.min.js"></script>
+    <title>8. Enter : new elements</title>
+
+    <style>
+        body
+        {
+            background-color:   rgb(51, 51, 51);
+        }
+
+        .container
+        {
+            background-color:   #ccc;
+            fill:               fuchsia;
+        }
+    </style>
+
+</head>
+
+
+<body>
+    <div>
+        <svg width="720" height="120" class="container" onclick="updateData()">
+        </svg>
+    </div>
+
+    <script>
+        const colors = ["red", "white", "blue", "orange", "yellow", "purple", "fuchsia"];
+        
+        let currentId = 0;
+        let data = [];
+
+        const makeNewDataPoint =    () =>   data    .push   (   {   
+                                                                    id:     currentId++, 
+                                                                    color:  _.sample(colors),
+                                                                    cx:     _.random(10, 700),
+                                                                    r:      _.random(5, 40)
+                                                                }
+                                                            );              
+
+        const updateData =  () =>
+                            {
+                                makeNewDataPoint();
+
+                                // JOIN
+                                const circles =     d3  .select("svg")
+                                                        .selectAll("circle")
+                                                        .data(data, (d) => d.id);
+
+                                // UPDATE : uniquement les éléments qui étaient déjà là !
+                                circles .transition()
+                                        .attr("r", (d, i) => d.r)
+                                        .style("fill", (d, i) => d.color);
+
+                                // ENTER : uniquement les nouveaux éléments
+                                circles .enter()
+                                        .append("circle")
+                                        .style("fill", "green")
+                                        .attr("cy", 60)
+                                        .attr("cx", (d, i) => d.cx)
+                                        .attr("r", (d, i) => 10);
+                            };
+
+
+    </script>
+</body>
+
+</html>

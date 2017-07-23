@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="d3.v4.min.js"></script>
+    <script src="lodash.min.js"></script>
+    <title>9. Exit : removed elements</title>
+
+    <style>
+        body
+        {
+            background-color:   rgb(51, 51, 51);
+        }
+
+        button
+        {
+            font-size: 20px;
+        }
+
+        .container
+        {
+            background-color:   #ccc;
+            fill:               fuchsia;
+        }
+    </style>
+
+</head>
+
+
+<body>
+    <div>
+        <svg width="720" height="120" class="container" onclick="updateData()">
+        </svg>
+        <br>
+        <button onclick="purge()">Purge !</button>
+    </div>
+
+    <script>
+        const colors = ["green", "white", "blue", "cyan", "black"];
+        
+        let data = _.range(20)  .map    (
+                                            (i) =>  ({   
+                                                        id:     i, 
+                                                        color:  _.sample(colors)
+                                                    })
+                                        );
+        
+        // INITIAL JOIN
+        const circles =     d3  .select("svg")
+                                .selectAll("circle")
+                                .data(data, (d) => d.id)
+        // INITIAL ENTER
+                                .enter()
+                                .append("circle")
+                                .style("fill", (d, i) => d.color)
+                                .attr("cy", 60)
+                                .attr("cx", (d, i) => 30 + i * 40)
+                                .attr("r", 15);
+
+        const popRandomData = () => data.splice(_.random(data.length - 1), 1);
+
+
+        const updateData =  () =>
+                            {
+                                popRandomData();
+
+                                // JOIN
+                                const circles =     d3  .select("svg")
+                                                        .selectAll("circle")
+                                                        .data(data, (d) => d.id);
+
+                                // EXIT
+                                circles .exit()
+                                        .style("fill", "red");
+                            };
+
+        const purge     =   ()  =>
+                            {
+                                // JOIN
+                                const circles =     d3  .select("svg")
+                                                        .selectAll("circle")
+                                                        .data(data, (d) => d.id);
+
+                                // EXIT
+                                circles .exit()
+                                        .transition(1000)
+                                        .attr("r", 25)
+                                        .transition(2000)
+                                        .attr("r", 0)
+                                        .remove();
+                            };
+    </script>
+</body>
+
+</html>

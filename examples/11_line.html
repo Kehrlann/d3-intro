@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="d3.v4.min.js"></script>
+    <script src="lodash.min.js"></script>
+    <title>11. Line</title>
+
+    <style>
+        body
+        {
+            background-color:   #eee;
+        }
+
+        button
+        {
+            font-size: 20px;
+        }
+
+        .container
+        {
+            fill:               red;
+        }
+
+        .my-line
+        {
+            fill: none;
+            stroke-width: 2px;
+            stroke: red;
+        }
+
+        .x.axis
+        {
+            font-size: 16px;
+        }
+    </style>
+
+</head>
+
+
+<body>
+    <div>
+        <svg width="720" height="400" class="container" onclick="updateData()">
+        </svg>
+    </div>
+
+    <script>
+        const width     = 720;
+        const height    = 400;
+        const maxDays   = 200;  // Pourrait être calculé dynamiquement, par exemple avec d3.max ou _.max / _.maxBy
+        const maxVal    = 42;   // Pourrait être calculé dynamiquement, par exemple avec d3.max ou _.max / _.maxBy
+
+        const margins   =   {
+                                top:    30,
+                                bottom: 30,
+                                left:   30,
+                                right:  30
+                            };
+
+        const x = d3    .scaleLinear()
+                        .domain([0, maxDays])
+                        .range([margins.left, width - margins.right]);
+
+        const y = d3    .scaleLinear()
+                        .domain([0, maxVal])
+                        .range([height - margins.bottom, margins.top]);    // Attention, y = 0 c'est le HAUT du svg, y = height étant le bas du svg, d'où le height -> 0
+
+        let currentDay = 0;
+
+        let data = _.range(20)  .map    (
+                                            (i) =>  {
+                                                        currentDay +=  10;
+                                                        return  {   
+                                                                    id:     i, 
+                                                                    day:    currentDay,
+                                                                    value:  20 + _.random(maxVal - 20)
+                                                                };
+                                                    }
+                                        );
+        
+        // INITIAL JOIN
+        const circles =     d3  .select("svg")
+                                .selectAll("circle")
+                                .data(data, (d) => d.id)
+        // INITIAL ENTER
+                                .enter()
+                                .append("circle")
+                                .attr("cy", (d, i) => y(d.value))
+                                .attr("cx", (d, i) => x(d.day))
+                                .attr("r", 5);
+
+        // AXES
+        var xAxis = d3  .axisBottom()
+                        .scale(x)
+                        .ticks(5);
+
+        var yAxis = d3  .axisLeft()
+                        .scale(y)
+                        .ticks(5);
+
+        d3  .select("svg")
+            .append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + (height - margins.bottom) + ")")
+            .call(xAxis);
+
+
+        d3  .select("svg")
+            .append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate("+ margins.left + ", 0)")
+            .call(yAxis);
+
+
+        // LINE  
+        const lineFunc = d3 .line()
+                            .x((d) => x(d.day))
+                            .y((d) => y(d.value));
+                            // .curve(d3.curveBasis);
+        
+        d3  .select("svg")
+            .append("path")
+            .attr("d", lineFunc(data))
+            .attr("class", "my-line");
+
+    </script>
+</body>
+
+</html>

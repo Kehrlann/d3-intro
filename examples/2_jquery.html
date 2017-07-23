@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="jquery-3.1.1.js"></script>
+    <title>2. Manipulate SVG</title>
+
+    <style>
+        body
+        {
+            background-color:   rgb(51, 51, 51);
+        }
+
+        .container
+        {
+            background-color:   #ccc;
+            fill:               rgb(223, 114, 85);
+        }
+
+        .bleu
+        {
+            fill:   blue;
+        }
+
+        .blanc
+        {
+            fill:   white;
+        }
+
+        .rouge
+        {
+            fill:   red;
+        }
+    </style>
+
+    <script>
+        // $(document) .ready  (   () =>   $("svg").append($("<circle>").attr("cx", 200).attr("cy", 60).attr("r", 50))
+        //                     );
+
+
+        $(document) .ready  (   () =>   $("circle") .each   (   (i, c)  =>
+                                                                {
+                                                                    const wrappedElement = $(c);
+                                                                    setInterval (   () => 
+                                                                                    { 
+                                                                                        if(wrappedElement.filter(":hover"))
+                                                                                        {
+                                                                                            const speed =  parseInt(wrappedElement.attr("current-speed"));
+                                                                                            const currentCx = parseInt(wrappedElement.attr("cx"));
+                                                                                            const nextCx = currentCx + speed <= 720 ? currentCx + speed : 0;
+                                                                                            wrappedElement.attr("cx", nextCx);
+                                                                                        }
+                                                                                    },
+                                                                                    20
+                                                                                );
+                                                                }
+                                                            )
+                                                    .hover  (   (evt)   =>  $(evt.currentTarget).attr("current-speed", 0).attr("r", 20),
+                                                                (evt)   =>  $(evt.currentTarget).attr("current-speed", $(evt.currentTarget).attr("base-speed")).attr("r", 10)
+                                                            )
+                            );
+    </script>
+</head>
+
+
+<body>
+    <div >
+        <svg width="720" height="120" class="container">
+            <circle cx="40"     cy="60"     r="10"  base-speed="1"   current-speed="1"   class="bleu"></circle>
+            <circle cx="80"     cy="60"     r="10"  base-speed="2"   current-speed="2"   class="blanc"></circle>
+            <circle cx="120"    cy="60"     r="10"  base-speed="3"   current-speed="3"   class="rouge"></circle>
+        </svg>
+    </div>
+</body>
+
+</html>
