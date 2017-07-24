@@ -46,20 +46,26 @@
                                                                     const wrappedElement = $(c);
                                                                     setInterval (   () => 
                                                                                     { 
-                                                                                        if(wrappedElement.filter(":hover"))
-                                                                                        {
-                                                                                            const speed =  parseInt(wrappedElement.attr("current-speed"));
-                                                                                            const currentCx = parseInt(wrappedElement.attr("cx"));
-                                                                                            const nextCx = currentCx + speed <= 720 ? currentCx + speed : 0;
-                                                                                            wrappedElement.attr("cx", nextCx);
-                                                                                        }
+                                                                                        const speed =  parseInt(wrappedElement.attr("current-speed"));
+                                                                                        const currentCx = parseInt(wrappedElement.attr("cx"));
+                                                                                        const nextCx = currentCx + speed <= 720 ? currentCx + speed : 0;
+                                                                                        wrappedElement.attr("cx", nextCx);
                                                                                     },
                                                                                     20
                                                                                 );
                                                                 }
                                                             )
-                                                    .hover  (   (evt)   =>  $(evt.currentTarget).attr("current-speed", 0).attr("r", 20),
-                                                                (evt)   =>  $(evt.currentTarget).attr("current-speed", $(evt.currentTarget).attr("base-speed")).attr("r", 10)
+                                                    .click  (   (evt)   =>  {
+                                                                                const wrappedElement = $(evt.currentTarget);
+                                                                                const speed = parseInt(wrappedElement.attr("current-speed"));
+                                                                                const base = parseInt(wrappedElement.attr("base-speed"));
+                                                                                const nextSpeed = !!speed ? 0 : parseInt(wrappedElement.attr("base-speed"));
+                                                                                console.log("next speed", base, speed, !!speed, nextSpeed);
+                                                                                wrappedElement.attr("current-speed", nextSpeed);
+                                                                            } 
+                                                            )
+                                                    .hover  (   (evt)   =>  $(evt.currentTarget).attr("r", 20),
+                                                                (evt)   =>  $(evt.currentTarget).attr("r", 10)
                                                             )
                             );
     </script>
