@@ -9,30 +9,13 @@
     <title>6. Data-binding</title>
 
     <style>
-        body
-        {
-            background-color:   rgb(51, 51, 51);
+        body {
+            background-color: rgb(51, 51, 51);
         }
 
-        .container
-        {
-            background-color:   #ccc;
-            fill:               fuchsia;
-        }
-
-        .bleu
-        {
-            fill:   blue;
-        }
-
-        .blanc
-        {
-            fill:   white;
-        }
-
-        .rouge
-        {
-            fill:   red;
+        .container {
+            background-color: #ccc;
+            fill: fuchsia;
         }
     </style>
 
@@ -40,34 +23,36 @@
 
 
 <body>
-    <div>
-        <svg width="720" height="120" class="container" onclick="updateData()">
-            <circle cx="40"     cy="60"     r="30"></circle>
-            <circle cx="120"    cy="60"     r="30"></circle>
-            <circle cx="200"    cy="60"     r="30"></circle>
-        </svg>
-    </div>
+<div>
+    <svg width="720" height="120" class="container">
+        <circle cx="40" cy="60" r="30"></circle>
+        <circle cx="120" cy="60" r="30"></circle>
+        <circle cx="200" cy="60" r="30"></circle>
+    </svg>
+    <br>
+    <button onclick="updateData()">Update data</button>
+</div>
 
-    <script>
-
-        d3  .selectAll("circle")
-            .data(["bleu", "blanc", "rouge"])
-            .attr("class", function(d, i){ return d;});
-
-        // d3  .selectAll("circle")
-        //     .data(["bleu"])
-        //     .attr("class", function(d, i){ return d;});
-
-        // d3  .selectAll("circle")
-        //     .data(["bleu", "bleu", "blanc", "blanc", "rouge", "rouge"])
-        //     .attr("class", function(d, i){ return d;});
+<script>
+    const states = [
+        ["blue", "white", "red"],
+        ["orange"],
+        ["purple", "purple", "grey", "grey", "red", "red"]
+    ];
 
 
-        const updateData = () =>    d3  .selectAll("circle")
-                                        .data(["rouge", "blanc", "bleu"])
-                                        .attr("class", function(d, i){ return d;});
+    let currentPosition = 0;
 
-    </script>
+    const updateData = () => {
+        const newState = states[currentPosition];
+        d3.selectAll("circle")
+            .data(newState)
+            .style("fill", d => d);
+
+        currentPosition = (currentPosition + 1) % states.length;
+    };
+
+</script>
 </body>
 
 </html>
