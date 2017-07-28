@@ -10,20 +10,17 @@
     <title>9. Exit : removed elements</title>
 
     <style>
-        body
-        {
-            background-color:   rgb(51, 51, 51);
+        body {
+            background-color: rgb(51, 51, 51);
         }
 
-        button
-        {
+        button {
             font-size: 20px;
         }
 
-        .container
-        {
-            background-color:   #ccc;
-            fill:               fuchsia;
+        .container {
+            background-color: #ccc;
+            fill: fuchsia;
         }
     </style>
 
@@ -31,68 +28,79 @@
 
 
 <body>
-    <div>
-        <svg width="720" height="120" class="container" onclick="updateData()">
-        </svg>
-        <br>
-        <button onclick="purge()">Purge !</button>
-    </div>
+<div>
+    <svg width="720" height="120" class="container">
+    </svg>
+    <br>
+    <button onclick="init()">Reset</button>
+    <button onclick="updateData()">Mark for removal</button>
+    <button onclick="purge()">Purge removed</button>
+</div>
 
-    <script>
-        const colors = ["green", "white", "blue", "cyan", "black"];
-        
-        let data = _.range(20)  .map    (
-                                            (i) =>  ({   
-                                                        id:     i, 
-                                                        color:  _.sample(colors)
-                                                    })
-                                        );
-        
+<script>
+    const colors = ["green", "white", "blue", "cyan", "black"];
+    let data = [];
+
+    function init() {
+        // Make twenty elements
+        data = _.range(20).map(
+            (i) => (
+                {
+                    id: i,
+                    color: _.sample(colors)
+                })
+        );
+
         // INITIAL JOIN
-        const circles =     d3  .select("svg")
-                                .selectAll("circle")
-                                .data(data, (d) => d.id)
-        // INITIAL ENTER
-                                .enter()
-                                .append("circle")
-                                .style("fill", (d, i) => d.color)
-                                .attr("cy", 60)
-                                .attr("cx", (d, i) => 30 + i * 40)
-                                .attr("r", 15);
+        const circles = d3.select("svg")
+            .selectAll("circle")
+            .data(data, (d) => d.id)
+            // INITIAL ENTER
+            .enter()
+            .append("circle")
+            .style("fill", (d, i) => d.color)
+            .attr("cy", 60)
+            .attr("cx", (d, i) => 30 + i * 40)
+            .attr("r", 15);
+    }
 
-        const popRandomData = () => data.splice(_.random(data.length - 1), 1);
+    function popRandomData() {
+        data.splice(_.random(data.length - 1), 1);
+    }
 
 
-        const updateData =  () =>
-                            {
-                                popRandomData();
+    function updateData() {
+        popRandomData();
 
-                                // JOIN
-                                const circles =     d3  .select("svg")
-                                                        .selectAll("circle")
-                                                        .data(data, (d) => d.id);
+        // JOIN
+        const circles = d3.select("svg")
+            .selectAll("circle")
+            .data(data, (d) => d.id);
 
-                                // EXIT
-                                circles .exit()
-                                        .style("fill", "red");
-                            };
+        // EXIT
+        circles.exit()
+            .style("fill", "red");
+    }
 
-        const purge     =   ()  =>
-                            {
-                                // JOIN
-                                const circles =     d3  .select("svg")
-                                                        .selectAll("circle")
-                                                        .data(data, (d) => d.id);
+    function purge() {
+        // JOIN
+        const circles = d3.select("svg")
+            .selectAll("circle")
+            .data(data, (d) => d.id);
 
-                                // EXIT
-                                circles .exit()
-                                        .transition(1000)
-                                        .attr("r", 25)
-                                        .transition(2000)
-                                        .attr("r", 0)
-                                        .remove();
-                            };
-    </script>
+        // EXIT
+        circles.exit()
+            .transition(1000)
+            .attr("r", 25)
+            .transition(2000)
+            .attr("r", 0)
+            .remove();
+    }
+
+
+    // INIT
+    init();
+</script>
 </body>
 
 </html>
