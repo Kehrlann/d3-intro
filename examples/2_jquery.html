@@ -9,30 +9,25 @@
     <title>2. Manipulate SVG</title>
 
     <style>
-        body
-        {
-            background-color:   rgb(51, 51, 51);
+        body {
+            background-color: rgb(51, 51, 51);
         }
 
-        .container
-        {
-            background-color:   #ccc;
-            fill:               rgb(223, 114, 85);
+        .container {
+            background-color: #ccc;
+            fill: rgb(223, 114, 85);
         }
 
-        .bleu
-        {
-            fill:   blue;
+        .bleu {
+            fill: blue;
         }
 
-        .blanc
-        {
-            fill:   white;
+        .blanc {
+            fill: white;
         }
 
-        .rouge
-        {
-            fill:   red;
+        .rouge {
+            fill: red;
         }
     </style>
 
@@ -41,45 +36,54 @@
         //                     );
 
 
-        $(document) .ready  (   () =>   $("circle") .each   (   (i, c)  =>
-                                                                {
-                                                                    const wrappedElement = $(c);
-                                                                    setInterval (   () => 
-                                                                                    { 
-                                                                                        const speed =  parseInt(wrappedElement.attr("current-speed"));
-                                                                                        const currentCx = parseInt(wrappedElement.attr("cx"));
-                                                                                        const nextCx = currentCx + speed <= 720 ? currentCx + speed : 0;
-                                                                                        wrappedElement.attr("cx", nextCx);
-                                                                                    },
-                                                                                    20
-                                                                                );
-                                                                }
-                                                            )
-                                                    .click  (   (evt)   =>  {
-                                                                                const wrappedElement = $(evt.currentTarget);
-                                                                                const speed = parseInt(wrappedElement.attr("current-speed"));
-                                                                                const base = parseInt(wrappedElement.attr("base-speed"));
-                                                                                const nextSpeed = !!speed ? 0 : parseInt(wrappedElement.attr("base-speed"));
-                                                                                console.log("next speed", base, speed, !!speed, nextSpeed);
-                                                                                wrappedElement.attr("current-speed", nextSpeed);
-                                                                            } 
-                                                            )
-                                                    .hover  (   (evt)   =>  $(evt.currentTarget).attr("r", 20),
-                                                                (evt)   =>  $(evt.currentTarget).attr("r", 10)
-                                                            )
-                            );
+        $(document).ready(
+            () =>
+                $("circle")
+                    .each(
+                        (i, c) => {
+                            const node = $(c);
+                            setInterval(() =>  moveCircle(node), 20);
+                        }
+                    )
+                    .click(
+                        (evt) => {
+                            const node = $(evt.currentTarget);
+                            toggleStartStop(node);
+                        }
+                    )
+                    .hover(
+                        (evt) => $(evt.currentTarget).attr("r", 20),
+                        (evt) => $(evt.currentTarget).attr("r", 10)
+                    )
+        );
+
+        function moveCircle(jqueryNode) {
+            const speed = parseInt(jqueryNode.attr("current-speed"));
+            const currentCx = parseInt(jqueryNode.attr("cx"));
+            const nextCx = currentCx + speed <= 720 ? currentCx + speed : 0;
+            jqueryNode.attr("cx", nextCx);
+        }
+
+        function toggleStartStop(jqueryNode) {
+            const speed = parseInt(jqueryNode.attr("current-speed"));
+            const base = parseInt(jqueryNode.attr("base-speed"));
+            const nextSpeed = !!speed ? 0 : parseInt(jqueryNode.attr("base-speed"));
+            jqueryNode.attr("current-speed", nextSpeed);
+            jqueryNode.css("fill", !!nextSpeed ? "" : "orange");
+        }
+
     </script>
 </head>
 
 
 <body>
-    <div >
-        <svg width="720" height="120" class="container">
-            <circle cx="40"     cy="60"     r="10"  base-speed="1"   current-speed="1"   class="bleu"></circle>
-            <circle cx="80"     cy="60"     r="10"  base-speed="2"   current-speed="2"   class="blanc"></circle>
-            <circle cx="120"    cy="60"     r="10"  base-speed="3"   current-speed="3"   class="rouge"></circle>
-        </svg>
-    </div>
+<div>
+    <svg width="720" height="120" class="container">
+        <circle cx="40" cy="60" r="10" base-speed="1" current-speed="1" class="bleu"></circle>
+        <circle cx="80" cy="60" r="10" base-speed="2" current-speed="2" class="blanc"></circle>
+        <circle cx="120" cy="60" r="10" base-speed="3" current-speed="3" class="rouge"></circle>
+    </svg>
+</div>
 </body>
 
 </html>
