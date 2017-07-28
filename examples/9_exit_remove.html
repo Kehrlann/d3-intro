@@ -42,6 +42,13 @@
     let data = [];
 
     function init() {
+        // Remove all existing stuff (by setting data to [])
+        d3.selectAll("svg > circle")
+            .data([])
+            .exit()
+            .remove();
+
+
         // Make twenty elements
         data = _.range(20).map(
             (i) => (
