@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="d3.v4.min.js"></script>
+    <script src="lodash.min.js"></script>
+
+    <title>13. Awesome bar chart</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        table td, table th {
+            padding: 5px 10px;
+            border: 1px solid black;
+        }
+
+        svg {
+            background: #eeeeee;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<h1>This is an awesome bar chart</h1>
+<div id="content">
+    <table>
+        <thead>
+        <tr>
+            <th>Position</th>
+            <th>Red</th>
+            <th>Oranges</th>
+            <th>Greens</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <br>
+    <svg viewBox="0 0 900 1600"></svg>
+</div>
+
+
+<script>
+    const HEIGHT = 900;
+    const WIDTH = 1600;
+    const NB_POINTS = 20;
+
+    function init() {
+        const data = makeData();
+        populateTable(data);
+
+        // TODO : let's have some fun !
+    }
+
+    function makeData() {
+        return _.range(NB_POINTS)
+            .map(
+                (i) => {
+                    return {
+                        position: i,
+                        green: _.random(50),
+                        orange: _.random(35),
+                        red: _.random(15),
+                    };
+                }
+            );
+    }
+
+    function populateTable(data) {
+        const rows = d3.select("tbody").selectAll("tr")
+            .data(data)
+            .enter()
+            .append("tr");
+
+        rows.append("td")
+            .text(d => d.position);
+        rows.append("td")
+            .text(d => d.red);
+        rows.append("td")
+            .text(d => d.orange);
+        rows.append("td")
+            .text(d => d.green);
+    }
+
+    init();
+</script>
+</body>
+</html>
