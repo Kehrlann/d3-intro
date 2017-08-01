@@ -9,6 +9,16 @@
 
     <title>13. Awesome bar chart</title>
     <style>
+        #content {
+            display: flex;
+            flex-flow: row;
+            justify-content: space-around;
+        }
+
+        #content > * {
+            flex: none;
+        }
+
         table {
             border-collapse: collapse;
         }
@@ -20,7 +30,6 @@
 
         svg {
             background: #eeeeee;
-            width: 100%;
         }
     </style>
 </head>
@@ -39,21 +48,25 @@
         <tbody>
         </tbody>
     </table>
-    <br>
-    <svg viewBox="0 0 900 1600"></svg>
+
+    <svg viewBox="0 0 500 1000" height="1000px" width="500px"></svg>
 </div>
 
 
 <script>
-    const HEIGHT = 900;
-    const WIDTH = 1600;
+    const HEIGHT = 1000;
+    const WIDTH = 500;
     const NB_POINTS = 20;
+    const MARGIN_TOP = 50;
+    const MARGIN_LEFT = 50;
 
     function init() {
         const data = makeData();
         populateTable(data);
 
-        // TODO : let's have some fun !
+        const [x, y] = makeScales(data);
+        placeRectangles(data, x, y);
+        drawAxes(x, y);
     }
 
     function makeData() {
@@ -85,6 +98,89 @@
         rows.append("td")
             .text(d => d.green);
     }
+
+    function makeScales(data) {
+        const maxValue = d3.max(data, d => d.green + d.orange + d.red);
+
+        const x = d3.scaleLinear()
+            .domain([0, maxValue])
+            .range([0, WIDTH - MARGIN_LEFT]);
+
+        const y = d3.scaleBand()
+            .domain(data.map(d => d.position))
+            .range([MARGIN_TOP, HEIGHT])
+            .paddingInner(0.1)
+            .paddingOuter(0.1);
+
+        return [x, y];
+    }
+
+    function placeRectangles(data, x, y) {
+        const rectGroups = d3.select("svg")
+            .selectAll("g.rectangle")
+            .data(data, d => d.position)
+            .enter()
+            .append("g")
+            .attr("class", "rectangle");
+
+        rectGroups.append("rect")
+            .attr("class", "green")
+            .style("fill", "green")
+            .attr("x", MARGIN_LEFT)
+            .attr("y", d => y(d.position))
+            .attr("height", d => y.bandwidth())
+//            .attr("width", 0)
+            .transition()
+            .duration(500)
+            .delay(1000)
+            .ease(d3.easeLinear)
+            .attr("width", d => x(d.green));
+
+
+        rectGroups.append("rect")
+            .attr("class", "orange")
+            .style("fill", "orange")
+            .attr("x", d => MARGIN_LEFT + x(d.green))
+            .attr("y", d => y(d.position))
+            .attr("height", d => y.bandwidth())
+            .transition()
+            .ease(d3.easeLinear)
+            .delay(1500)
+            .duration(500)
+            .attr("width", d => x(d.orange))
+
+
+        rectGroups.append("rect")
+            .attr("class", "red")
+            .style("fill", "red")
+            .attr("x", d => MARGIN_LEFT + x(d.green + d.orange))
+            .attr("y", d => y(d.position))
+            .attr("height", d => y.bandwidth())
+            .transition()
+            .ease(d3.easeLinear)
+            .delay(2000)
+            .duration(500)
+            .attr("width", d => x(d.red));
+    }
+
+    function drawAxes(x, y) {
+        const axisLeft = d3.axisLeft(y);
+        const axisTop = d3.axisTop(x);
+
+        d3.select("svg")
+            .append("g")
+            .attr("class", "axis left")
+            .attr("transform", `translate(${MARGIN_LEFT}, 0)`)
+            .call(axisLeft);
+
+        d3.select("svg")
+            .append("g")
+            .attr("class", "axis top")
+            .attr("transform", `translate(${MARGIN_LEFT }, ${MARGIN_TOP})`)
+            .call(axisTop);
+
+    }
+
 
     init();
 </script>
